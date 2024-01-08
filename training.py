@@ -47,7 +47,7 @@ def train():
 
         with torch.no_grad():
             img, gt = testset[0]
-            img = img.to('mps')
+            img = img.to(DEVICE)
             pred = model(img.unsqueeze(0))
             save_example(img.cpu(), gt, pred, f"saved_images/example_epoch_{epoch}")
 
@@ -57,7 +57,7 @@ def test(weigths_file):
     with torch.no_grad():
         gts, preds = [], []
         for x, y in tqdm(testset):
-            pred = model(x.to('mps').unsqueeze(0))
+            pred = model(x.to(DEVICE).unsqueeze(0))
             gts.append([y[0].item(), y[1].item()])
             preds.append([pred[0][0].item(), pred[0][1].item()])
         print(f"for this model, loss = {criterion(torch.Tensor(gts), torch.Tensor(preds))}")
@@ -68,7 +68,7 @@ if __name__=='__main__':
     if TRAINING:
         train()
     else:
-        test("saved_checkpoints/epoch_6")
+        test("saved_checkpoints/epoch_10")
 
     
 
