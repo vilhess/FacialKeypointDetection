@@ -13,10 +13,12 @@ TRAINING = False
 DEVICE = 'mps'
 LR = 3e-4
 BATCH_SIZE=16
-EPOCHS = 10
+EPOCHS = 30
+
+torch.manual_seed(0)
 
 model = resnet18(weights='ResNet18_Weights.DEFAULT')
-model.fc = nn.Linear(512, 2)
+model.fc = nn.Linear(512, 6)
 model = model.to(device=DEVICE)
 criterion = nn.MSELoss(reduction="sum")
 optimizer = optim.Adam(lr=LR, params=model.parameters())
@@ -43,13 +45,13 @@ def train():
             current_loss+=loss.item()
         print(f"for epoch {epoch} , current loss is {current_loss/len(trainloader)}")
 
-        save_checkpoint(model, f"saved_checkpoints/epoch_{epoch}")
+        save_checkpoint(model, f"saved_checkpoints/epoch_{epoch}_bis")
 
         with torch.no_grad():
             img, gt = testset[0]
             img = img.to(DEVICE)
             pred = model(img.unsqueeze(0))
-            save_example(img.cpu(), gt, pred, f"saved_images/example_epoch_{epoch}")
+            save_example(img.cpu(), gt, pred, f"saved_images/example_epoch_{epoch}_bis")
 
 def test(weigths_file):
     load_checkpoint(model, path=weigths_file)
@@ -58,17 +60,16 @@ def test(weigths_file):
         gts, preds = [], []
         for x, y in tqdm(testset):
             pred = model(x.to(DEVICE).unsqueeze(0))
-            gts.append([y[0].item(), y[1].item()])
-            preds.append([pred[0][0].item(), pred[0][1].item()])
+            gts.append([y[0].item(), y[1].item(), y[2].item(), y[3].item(), y[4].item(), y[5].item()])
+            preds.append([pred[0][0].item(), pred[0][1].item(), pred[0][2].item(), pred[0][3].item(), pred[0][4].item(), pred[0][5].item()])
         print(f"for this model, loss = {criterion(torch.Tensor(gts), torch.Tensor(preds))}")
-
 
 if __name__=='__main__':
 
     if TRAINING:
         train()
     else:
-        test("saved_checkpoints/epoch_10")
+        test("saved_checkpoints/epoch_20")
 
     
 

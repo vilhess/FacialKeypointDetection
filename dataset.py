@@ -16,8 +16,8 @@ class FacialKeyPoint(Dataset):
     
     def __getitem__(self, index):
         img_path = os.path.join('data/images/', self.df[index]['file_name'])
-        nose_pos = self.df[index]['face_landmarks'][30]
+        pos = self.df[index]['face_landmarks'][30] + self.df[index]['face_landmarks'][37] + self.df[index]['face_landmarks'][43]
         img = Image.open(img_path)
         if self.transform:
             img = self.transform(img)
-        return img, torch.Tensor(nose_pos)
+        return img, torch.Tensor(pos)

@@ -1,4 +1,4 @@
-# Nose Detection using Fine-tuned ResNet
+# Nose and Eyes Detection using Fine-tuned ResNet
 
 ## Overview
 
@@ -26,4 +26,4 @@ don't forget to specify the DEVICE at the top of the file and set TRAINING to Tr
 
 In the folder saved_images, you can find the results of the model on the test set for a particular image during the training.
 
-![Image](saved_images/example.png)
+![Alt Text](saved_images/example.gif)
